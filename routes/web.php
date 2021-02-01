@@ -13,6 +13,28 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+/*HOMEPAGE*/
+Route::get('/', 'HomeController@index')->name('home');
+
+/*ROTTE PUBLIC*/
+
+Route::get('posts', 'PostController@index')->name('posts.index');
+Route::get('posts/{slug}', 'PostController@show')->name('posts.show');
+
+/*ROTTE PER LOGIN / REGISTRAZIONE*/
+
+Auth::routes();
+
+/*ROTTE PAGINE PER UTENTI LOGGATI*/
+
+Route::prefix('admin')
+    ->namespace('Admin')
+    ->name('admin.') //mi permette di aggiungere un pezzo avanti alla route
+    ->middleware('auth')
+    ->group(function() {
+        //Home Admin
+            Route::get('/', 'HomeController@index')->name('home');
+
+        //Rotte CRUD per i Post
+            Route::resource('posts', 'PostController');
+    });
